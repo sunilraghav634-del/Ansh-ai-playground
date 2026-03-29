@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ansh AI Playground - Smart Memory</title>
+
+    <!-- ✅ PWA Tags (3 lines added) -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -78,9 +84,13 @@
     </div>
 
     <script>
+        // ✅ PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+
         const GUEST_KEY = "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";
         
-        // Memory Array
         let chatHistory = [];
 
         function useGuestKey() {
@@ -104,7 +114,6 @@
 
             if(document.getElementById('welcomeMsg')) document.getElementById('welcomeMsg').remove();
 
-            // 1. Add User Message to UI & History
             appendMessage('user', prompt);
             chatHistory.push({ "role": "user", "content": prompt });
             userInput.value = '';
@@ -123,7 +132,7 @@
                     },
                     body: JSON.stringify({
                         "model": model,
-                        "messages": chatHistory // Sending full history for context
+                        "messages": chatHistory
                     })
                 });
 
@@ -132,8 +141,6 @@
                 if (data.choices && data.choices[0]) {
                     const aiContent = data.choices[0].message.content;
                     aiMsgDiv.innerText = aiContent;
-                    
-                    // 2. Add AI Response to History
                     chatHistory.push({ "role": "assistant", "content": aiContent });
                 } else {
                     aiMsgDiv.innerHTML = `<span class="text-red-400">Error: ${data.error ? data.error.message : "Invalid Response"}</span>`;
@@ -144,8 +151,6 @@
             } finally {
                 sendBtn.disabled = false;
                 chatBox.scrollTop = chatBox.scrollHeight;
-                
-                // Limit History to last 10 messages to save tokens/performance
                 if(chatHistory.length > 10) {
                     chatHistory = chatHistory.slice(-10);
                 }
