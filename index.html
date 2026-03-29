@@ -7,29 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
         .chat-container { height: calc(100vh - 320px); min-height: 400px; }
         .glass-effect { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="text-slate-200">
+<body>
 
     <div class="max-w-5xl mx-auto p-4 md:p-8">
         <header class="flex justify-between items-center mb-8">
             <div>
                 <h1 class="text-4xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent italic">ANSH AI</h1>
-                <p class="text-slate-500 text-sm font-medium uppercase tracking-widest">Dev Playground v1.0</p>
+                <p class="text-slate-500 text-sm font-medium uppercase tracking-widest">Dev Playground v1.1</p>
             </div>
-            <div class="text-right hidden sm:block">
-                <span class="px-3 py-1 bg-green-500/10 text-green-400 text-xs rounded-full border border-green-500/20">System Online</span>
+            <div class="hidden sm:block">
+                <span class="px-3 py-1 bg-blue-500/10 text-blue-400 text-xs rounded-full border border-blue-500/20">Fixed Endpoints</span>
             </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1 space-y-4">
-                <div class="glass-effect p-5 rounded-2xl shadow-xl">
+                <div class="glass-effect p-5 rounded-2xl shadow-xl border-blue-500/20">
                     <h2 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-tighter">Configuration</h2>
                     
                     <div class="space-y-4">
@@ -43,41 +43,36 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold mb-2 text-slate-300">Model Engine</label>
+                            <label class="block text-xs font-semibold mb-2 text-slate-300">Select Model</label>
                             <select id="modelSelect" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer">
-                                <optgroup label="Fast & Free">
-                                    <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
-                                    <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Free)</option>
-                                    <option value="meta-llama/llama-3.1-8b-instruct:free">Llama 3.1 8B (Free)</option>
-                                </optgroup>
-                                <optgroup label="Powerful">
-                                    <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
-                                    <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
-                                </optgroup>
+                                <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash (Fast)</option>
+                                <option value="deepseek/deepseek-r1">DeepSeek R1 (Latest)</option>
+                                <option value="meta-llama/llama-3.1-8b-instruct">Llama 3.1 8B</option>
+                                <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
                             </select>
+                            <p class="text-[10px] text-slate-500 mt-2 italic">*If 'Free' models fail, ensure key has 1 cent balance or use Gemini.*</p>
                         </div>
 
                         <button onclick="clearChat()" class="w-full py-2 text-slate-500 hover:text-red-400 text-xs font-medium transition italic">
-                            Clear Conversations
+                            Clear History
                         </button>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-3 flex flex-col space-y-4">
-                <div id="chatBox" class="chat-container glass-effect rounded-2xl p-6 overflow-y-auto shadow-2xl flex flex-col gap-4">
+                <div id="chatBox" class="chat-container glass-effect rounded-2xl p-6 overflow-y-auto shadow-2xl flex flex-col gap-4 border-slate-700/50">
                     <div class="m-auto text-center opacity-40">
-                        <div class="text-5xl mb-4">⚡</div>
-                        <p class="text-sm">Enter your query to begin the session.</p>
+                        <div class="text-5xl mb-4">🤖</div>
+                        <p class="text-sm">Ready for your input.</p>
                     </div>
                 </div>
 
                 <div class="relative group">
-                    <textarea id="userInput" rows="2" placeholder="Ask Ansh AI anything..." 
-                        class="w-full bg-slate-800/80 border border-slate-700 rounded-2xl p-4 pr-16 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all resize-none shadow-lg"
-                        onkeydown="if(event.keyCode===13 && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
+                    <textarea id="userInput" rows="2" placeholder="Ask Ansh AI..." 
+                        class="w-full bg-slate-800/80 border border-slate-700 rounded-2xl p-4 pr-16 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all resize-none shadow-lg"></textarea>
                     <button onclick="sendMessage()" id="sendBtn" 
-                        class="absolute right-3 bottom-3 bg-blue-600 hover:bg-blue-500 p-3 rounded-xl shadow-lg transition-transform active:scale-95 group-hover:shadow-blue-500/20">
+                        class="absolute right-3 bottom-3 bg-blue-600 hover:bg-blue-500 p-3 rounded-xl shadow-lg transition-transform active:scale-95">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
                     </button>
                 </div>
@@ -93,33 +88,26 @@
         }
 
         function clearChat() {
-            document.getElementById('chatBox').innerHTML = `<div class="m-auto text-center opacity-40"><div class="text-5xl mb-4">⚡</div><p class="text-sm">New Session Started.</p></div>`;
+            document.getElementById('chatBox').innerHTML = `<div class="m-auto text-center opacity-40"><div class="text-5xl mb-4">🤖</div><p class="text-sm">New Session Started.</p></div>`;
         }
 
         async function sendMessage() {
-            const apiKeyInput = document.getElementById('apiKey');
+            const apiKey = document.getElementById('apiKey').value.trim();
             const model = document.getElementById('modelSelect').value;
-            const userInputField = document.getElementById('userInput');
+            const userInput = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
             const sendBtn = document.getElementById('sendBtn');
 
-            const apiKey = apiKeyInput.value.trim();
-            const prompt = userInputField.value.trim();
+            if (!apiKey || !userInput.value.trim()) return;
 
-            if (!apiKey) return alert("Error: API Key is missing. Click 'Use Guest Key' or enter your own.");
-            if (!prompt) return;
-
-            // Remove empty state icon
             if(chatBox.querySelector('.m-auto')) chatBox.innerHTML = '';
 
-            // User UI
+            const prompt = userInput.value;
             appendMessage('user', prompt);
-            userInputField.value = '';
+            userInput.value = '';
             
-            // Loading UI
             sendBtn.disabled = true;
-            sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            const aiMsgDiv = appendMessage('ai', '<span class="animate-pulse">Analyzing...</span>');
+            const aiMsgDiv = appendMessage('ai', '<span class="animate-pulse">Connecting to OpenRouter...</span>');
 
             try {
                 const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -127,7 +115,7 @@
                     headers: {
                         "Authorization": `Bearer ${apiKey}`,
                         "Content-Type": "application/json",
-                        "HTTP-Referer": window.location.origin,
+                        "HTTP-Referer": "http://localhost:3000", // Required for some models
                         "X-Title": "Ansh AI Playground"
                     },
                     body: JSON.stringify({
@@ -138,21 +126,18 @@
 
                 const data = await response.json();
 
-                if (data && data.choices && data.choices.length > 0) {
-                    aiMsgDiv.innerHTML = data.choices[0].message.content.replace(/\n/g, '<br>');
-                } else if (data.error) {
-                    aiMsgDiv.innerHTML = `<span class="text-red-400 font-bold">API ERROR:</span> ${data.error.message}`;
-                    aiMsgDiv.parentElement.classList.add('border-red-500/30', 'bg-red-900/10');
+                if (data.error) {
+                    aiMsgDiv.innerHTML = `<span class="text-red-400 font-bold italic text-xs">ERROR CODE: ${data.error.code}</span><br>${data.error.message}`;
+                } else if (data.choices && data.choices[0]) {
+                    aiMsgDiv.innerText = data.choices[0].message.content;
                 } else {
-                    throw new Error("Invalid response format from OpenRouter.");
+                    aiMsgDiv.innerText = "System returned an empty response. Try Gemini Flash.";
                 }
 
-            } catch (error) {
-                aiMsgDiv.innerHTML = `<span class="text-red-400 italic font-bold">SYSTEM CRASH:</span> ${error.message}`;
-                console.error("Critical Failure:", error);
+            } catch (err) {
+                aiMsgDiv.innerText = "Network Error: " + err.message;
             } finally {
                 sendBtn.disabled = false;
-                sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
@@ -161,14 +146,8 @@
             const chatBox = document.getElementById('chatBox');
             const wrapper = document.createElement('div');
             wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-            
             const msgDiv = document.createElement('div');
-            msgDiv.className = `max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
-                role === 'user' 
-                ? 'bg-blue-600 text-white rounded-br-none shadow-lg' 
-                : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-none shadow-xl'
-            }`;
-            
+            msgDiv.className = `max-w-[85%] p-4 rounded-2xl text-sm ${role === 'user' ? 'bg-blue-600' : 'bg-slate-800 border border-slate-700'}`;
             msgDiv.innerHTML = text;
             wrapper.appendChild(msgDiv);
             chatBox.appendChild(wrapper);
