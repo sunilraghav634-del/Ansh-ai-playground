@@ -3,100 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Playground - by Ansh</title>
+    <title>Ansh AI Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { padding: 15px; background: #1e293b; text-align: center; border-bottom: 2px solid #3b82f6; }
-        #setup { padding: 20px; text-align: center; background: #1e293b; }
-        input { padding: 10px; border-radius: 5px; border: none; width: 60%; }
-        button { padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; margin: 5px; }
-        .btn-main { background: #3b82f6; color: white; }
-        .btn-guest { background: #10b981; color: white; }
-        #chat { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 10px; max-width: 80%; line-height: 1.5; }
-        .user { align-self: flex-end; background: #3b82f6; }
-        .ai { align-self: flex-start; background: #334155; border: 1px solid #475569; }
-        /* Layout Fix to avoid Google Warning Strip */
-        #input-area { padding: 20px; background: #1e293b; display: flex; gap: 10px; margin-bottom: 70px; }
+        .chat-container { height: calc(100vh - 250px); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="bg-gray-900 text-gray-100 font-sans">
 
-<header>
-    <h2 style="margin:0">🚀 AI Playground</h2>
-    <div style="font-size: 12px; color: #94a3b8;">1.3 Lakh+ Views • Master Edition</div>
-</header>
+    <div class="max-w-4xl mx-auto p-4">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-blue-400">Ansh AI Playground</h1>
+            <p class="text-gray-400 text-sm">Testing multi-model integration via OpenRouter</p>
+        </header>
 
-<div id="setup">
-    <input type="password" id="keyInput" placeholder="Enter Gemini API Key...">
-    <br>
-    <button class="btn-main" onclick="startApp()">Start AI</button>
-    <button class="btn-guest" onclick="activateGuest()">Unlock Guest Access 🔑</button>
-</div>
-
-<div id="chat">
-    <div class="msg ai">Welcome to the Playground! Guest Access unlock karo ya apni key daalo start karne ke liye.</div>
-</div>
-
-<div id="input-area">
-    <input type="text" id="userInput" placeholder="Ask AI anything..." style="flex:1">
-    <button class="btn-main" onclick="askAI()">Send</button>
-</div>
-
-<script>
-    // --- API CONFIG ---
-    let API_KEY = "";
-    const TEST_KEY = "PASTE_YOUR_API_KEY_HERE"; // <--- APNI KEY YAHAN DAALO
-
-    function activateGuest() {
-        API_KEY = TEST_KEY;
-        document.getElementById('keyInput').value = "********";
-        document.getElementById('setup').style.backgroundColor = "#064e3b";
-        alert("Special Guest Access Granted! 😎");
-    }
-
-    function startApp() {
-        const val = document.getElementById('keyInput').value;
-        if(val !== "********") API_KEY = val;
-        if(API_KEY) {
-            alert("System Ready! Let's Go.");
-        } else {
-            alert("Bhai, Key toh daalo!");
-        }
-    }
-
-    async function askAI() {
-        const input = document.getElementById('userInput');
-        const chat = document.getElementById('chat');
-        const text = input.value;
-        if(!text || !API_KEY) return;
-
-        chat.innerHTML += `<div class="msg user">${text}</div>`;
-        input.value = "";
-        chat.scrollTop = chat.scrollHeight;
-
-        try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
-            });
-            const data = await res.json();
+        <div class="bg-gray-800 p-4 rounded-lg shadow-lg mb-4 flex flex-wrap gap-4">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-semibold mb-1 uppercase text-gray-500">API Key</label>
+                <input type="password" id="apiKey" placeholder="Enter your OpenRouter Key" 
+                    class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-sm focus:outline-none focus:border-blue-500">
+                <button onclick="useGuestKey()" class="text-[10px] text-blue-400 mt-1 hover:underline">Use Guest Key</button>
+            </div>
             
-            // Fix: Agar error aaye toh message dikhao
-            if(data.error) {
-                chat.innerHTML += `<div class="msg ai" style="color:#f87171">Error: ${data.error.message}</div>`;
-            } else {
-                const aiMsg = data.candidates[0].content.parts[0].text;
-                chat.innerHTML += `<div class="msg ai">${aiMsg}</div>`;
-            }
-            chat.scrollTop = chat.scrollHeight;
-        } catch (e) {
-            chat.innerHTML += `<div class="msg ai" style="color:#f87171">Server Busy! Check Net or Key.</div>`;
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-semibold mb-1 uppercase text-gray-500">Select Model</label>
+                <select id="modelSelect" class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-sm focus:outline-none focus:border-blue-500">
+                    <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
+                    <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Free)</option>
+                    <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                    <option value="meta-llama/llama-3.1-8b-instruct:free">Llama 3.1 8B (Free)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="chatBox" class="chat-container bg-gray-800 rounded-lg p-4 overflow-y-auto mb-4 border border-gray-700">
+            <div class="text-center text-gray-500 mt-10">Select a model and start a conversation.</div>
+        </div>
+
+        <div class="flex gap-2">
+            <textarea id="userInput" rows="1" placeholder="Type your message..." 
+                class="flex-1 bg-gray-800 border border-gray-700 rounded-lg p-3 focus:outline-none focus:border-blue-500 resize-none"></textarea>
+            <button onclick="sendMessage()" id="sendBtn" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-bold transition">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const GUEST_KEY = "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";
+
+        function useGuestKey() {
+            document.getElementById('apiKey').value = GUEST_KEY;
         }
-    }
-</script>
+
+        async function sendMessage() {
+            const apiKey = document.getElementById('apiKey').value;
+            const model = document.getElementById('modelSelect').value;
+            const userInput = document.getElementById('userInput').value;
+            const chatBox = document.getElementById('chatBox');
+            const sendBtn = document.getElementById('sendBtn');
+
+            if (!apiKey) return alert("Please enter an API Key or use Guest Mode!");
+            if (!userInput.trim()) return;
+
+            // Append User Message
+            appendMessage('user', userInput);
+            document.getElementById('userInput').value = '';
+            
+            // Loading State
+            sendBtn.disabled = true;
+            sendBtn.innerText = "Wait...";
+            const aiMsgDiv = appendMessage('ai', 'Thinking...');
+
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${apiKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "model": model,
+                        "messages": [{ "role": "user", "content": userInput }]
+                    })
+                });
+
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                aiMsgDiv.innerText = aiResponse;
+
+            } catch (error) {
+                aiMsgDiv.innerText = "Error: " + error.message;
+                aiMsgDiv.classList.add('text-red-400');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerText = "Send";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function appendMessage(role, text) {
+            const chatBox = document.getElementById('chatBox');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `mb-4 p-3 rounded-lg ${role === 'user' ? 'bg-blue-900/30 ml-auto max-w-[80%]' : 'bg-gray-700 mr-auto max-w-[80%]'}`;
+            msgDiv.innerHTML = `<span class="block text-[10px] uppercase font-bold text-gray-400 mb-1">${role}</span>
+                               <div class="whitespace-pre-wrap">${text}</div>`;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return msgDiv.querySelector('div');
+        }
+    </script>
 </body>
-        </html>
+    </html>
     
