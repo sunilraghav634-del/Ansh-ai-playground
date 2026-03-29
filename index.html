@@ -3,177 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ansh's AI with Memory</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Anime Soul - AI Playground</title>
     <style>
-        #chatBox::-webkit-scrollbar { width: 6px; }
-        #chatBox::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
-        .message-appear { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header & Analytics Flex */
+        header {
+            padding: 15px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid #e94560;
+        }
+
+        h1 { margin: 0; color: #e94560; font-size: 1.5rem; }
+        .stats { font-size: 0.8rem; color: #aaa; margin-top: 5px; }
+
+        /* Setup Area (Key Input) */
+        #setup-container {
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        input {
+            padding: 12px;
+            width: 70%;
+            max-width: 300px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #0f3460;
+            color: white;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 5px;
+            border-radius: 8px;
+            border: none;
+            background: #e94560;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #ff2e63; transform: scale(1.05); }
+        .guest-btn { background: #00d2d3; }
+
+        /* Chat Area */
+        #chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px;
+            border-radius: 15px;
+            line-height: 1.4;
+        }
+
+        .user { align-self: flex-end; background: #e94560; color: white; }
+        .ai { align-self: flex-start; background: #0f3460; border: 1px solid #e94560; }
+
+        /* Input Bar (Shifted UP to avoid Google Warning) */
+        #input-container {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            gap: 10px;
+            margin-bottom: 60px; /* Isse layout warning ke upar rahega */
+        }
     </style>
 </head>
-<body class="bg-[#0b0f1a] text-gray-200 min-h-screen flex flex-col items-center p-2 sm:p-6 font-sans">
+<body>
 
-    <div class="w-full max-w-4xl bg-[#161b2b] rounded-2xl shadow-2xl flex flex-col h-[92vh] border border-gray-800">
-        
-        <div class="p-4 border-b border-gray-800 flex flex-wrap justify-between items-center gap-3 bg-[#1c2336] rounded-t-2xl">
-            <div>
-                <h1 class="text-xl font-black text-blue-500 tracking-tight">ANSH <span class="text-white font-light text-sm italic">AI Brain</span></h1>
-                <p id="statusLabel" class="text-[10px] text-green-500 mt-1 uppercase tracking-widest font-bold text-blue-400">Memory Enabled 🧠</p>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <button onclick="clearMemory()" class="bg-red-900/30 hover:bg-red-900/50 text-red-400 text-[10px] px-3 py-2 rounded-lg border border-red-900/50 transition font-bold uppercase">
-                    Clear Memory
-                </button>
-                <select id="modelId" class="bg-gray-900 border border-gray-700 px-3 py-2 rounded-lg text-sm text-blue-300 focus:ring-2 focus:ring-blue-600 outline-none w-[150px] sm:w-[200px]">
-                    <option value="loading">Searching Models...</option>
-                </select>
-            </div>
-        </div>
+<header>
+    <h1>ANIME SOUL</h1>
+    <div class="stats">1.3 Lakh+ Views • Powered by Ansh System</div>
+</header>
 
-        <div class="px-4 py-3 bg-[#111625] border-b border-gray-800 flex gap-2 items-center">
-            <input type="password" id="apiKey" 
-                   class="flex-1 bg-gray-900 border border-gray-800 p-2 pl-3 rounded-lg text-xs focus:border-blue-500 outline-none transition-all" 
-                   placeholder="Paste your OpenRouter API Key...">
-        </div>
+<div id="setup-container">
+    <input type="password" id="apiKey" placeholder="Enter API Key or Use Guest Access">
+    <br>
+    <button onclick="startChat()">Start Chat</button>
+    <button class="guest-btn" onclick="activateGuest()">Unlock Guest Access 🔑</button>
+</div>
 
-        <div id="chatBox" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-            <div id="welcomeMsg" class="bg-blue-900/10 border border-blue-500/20 p-5 rounded-2xl text-center">
-                <p class="text-blue-400 font-bold mb-1">System with Memory!</p>
-                <p class="text-xs text-gray-400">Ab ye AI aapki purani baaton ko yaad rakhega jab tak aap 'Clear Memory' nahi dabate.</p>
-            </div>
-        </div>
+<div id="chat-box">
+    <div class="message ai">Hello! Main Gojo Satoru hoon. Baat karni hai? Pehle Guest Access unlock karo ya apni API key daalo!</div>
+</div>
 
-        <div id="loading" class="hidden px-6 py-2">
-            <div class="flex items-center gap-2 text-blue-500 text-xs font-mono">
-                <span class="animate-bounce">●</span><span class="animate-bounce" style="animation-delay: 0.2s">●</span><span class="animate-bounce" style="animation-delay: 0.4s">●</span>
-                <span>AI is recalling...</span>
-            </div>
-        </div>
+<div id="input-container">
+    <input type="text" id="userInput" placeholder="Ask anything to Gojo..." style="flex: 1;">
+    <button onclick="sendMessage()">Send</button>
+</div>
 
-        <div class="p-4 bg-[#1c2336] rounded-b-2xl border-t border-gray-800">
-            <form id="chatForm" class="flex gap-2">
-                <input type="text" id="userInput" 
-                       class="flex-1 bg-gray-900 border border-gray-700 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all text-sm" 
-                       placeholder="Baat kariye..." autocomplete="off">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-black shadow-lg transition-all active:scale-95">
-                    SEND
-                </button>
-            </form>
-        </div>
-    </div>
+<script>
+    // --- CONFIGURATION ---
+    const MY_TEST_KEY = "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"; // <--- APNI KEY YAHAN DAALO
+    let activeKey = "";
 
-    <script>
-        const chatBox = document.getElementById('chatBox');
-        const apiKeyInput = document.getElementById('apiKey');
-        const modelSelect = document.getElementById('modelId');
-        const loading = document.getElementById('loading');
-        
-        // --- BRAIN LOGIC START ---
-        let chatHistory = []; // Isme saari baatein save hongi
+    function activateGuest() {
+        document.getElementById('apiKey').value = "********";
+        activeKey = MY_TEST_KEY;
+        alert("Ansh's Special Master Key Activated! 😎");
+        document.getElementById('setup-container').style.display = 'none';
+    }
 
-        function clearMemory() {
-            chatHistory = [];
-            chatBox.innerHTML = `<div class="bg-red-900/10 border border-red-500/20 p-3 rounded-xl text-center text-xs text-red-400">Memory Cleared!</div>`;
-            console.log("Memory wiped.");
+    function startChat() {
+        activeKey = document.getElementById('apiKey').value;
+        if(activeKey) {
+            document.getElementById('setup-container').style.display = 'none';
+        } else {
+            alert("Bhai, key toh daalo!");
         }
+    }
 
-        async function fetchFreeModels() {
-            try {
-                const response = await fetch("https://openrouter.ai/api/v1/models");
-                const data = await response.json();
-                modelSelect.innerHTML = ''; 
-                const freeModels = data.data.filter(m => m.pricing.prompt === "0" && m.pricing.completion === "0");
-                if (freeModels.length > 0) {
-                    freeModels.forEach(model => {
-                        const option = document.createElement('option');
-                        option.value = model.id;
-                        option.textContent = model.name || model.id;
-                        modelSelect.appendChild(option);
-                    });
-                } else {
-                    modelSelect.innerHTML = '<option value="google/gemini-2.0-flash-lite-preview-02-05:free">Gemini 2.0 (Free)</option>';
-                }
-            } catch (err) {
-                modelSelect.innerHTML = '<option value="google/gemini-2.0-flash-lite-preview-02-05:free">Gemini 2.0 (Free)</option>';
-            }
-        }
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const chatBox = document.getElementById('chat-box');
+        const text = input.value;
+        if(!text || !activeKey) return;
 
-        window.onload = () => {
-            const savedKey = localStorage.getItem('openrouter_key');
-            if (savedKey) apiKeyInput.value = savedKey;
-            fetchFreeModels();
-        };
+        // User Message UI
+        chatBox.innerHTML += `<div class="message user">${text}</div>`;
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
 
-        apiKeyInput.addEventListener('input', (e) => {
-            localStorage.setItem('openrouter_key', e.target.value);
-        });
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeKey}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: "You are Gojo Satoru from Jujutsu Kaisen. Talk in Hindi and English mix. Answer this: " + text }] }]
+                })
+            });
 
-        function appendMsg(role, text) {
-            const wrapper = document.createElement('div');
-            wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} message-appear`;
-            const msg = document.createElement('div');
-            msg.className = role === 'user' 
-                ? "bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none max-w-[85%] text-sm shadow-lg shadow-blue-900/10" 
-                : "bg-[#252d44] text-gray-100 p-4 rounded-2xl rounded-tl-none max-w-[85%] text-sm border border-gray-700 shadow-xl";
-            msg.innerHTML = `<span class="text-[9px] uppercase font-black tracking-widest block mb-1 opacity-50">${role === 'user' ? 'Me' : 'AI Assistant'}</span>${text.replace(/\n/g, '<br>')}`;
-            wrapper.appendChild(msg);
-            chatBox.appendChild(wrapper);
+            const data = await response.json();
+            const aiText = data.candidates[0].content.parts[0].text;
+
+            // AI Message UI
+            chatBox.innerHTML += `<div class="message ai">${aiText}</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (error) {
+            chatBox.innerHTML += `<div class="message ai" style="color:red">Error: Server Busy! (Check API Key)</div>`;
         }
+    }
+</script>
 
-        document.getElementById('chatForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('userInput');
-            const message = input.value.trim();
-            const apiKey = apiKeyInput.value.trim();
-            const model = modelSelect.value;
-
-            if (!message || !apiKey) return alert("API Key aur message zaroori hain!");
-
-            document.getElementById('welcomeMsg')?.remove();
-            appendMsg('user', message);
-            
-            // 1. Context Update: History mein user ka message add karo
-            chatHistory.push({ "role": "user", "content": message });
-            
-            input.value = '';
-            loading.classList.remove('hidden');
-
-            try {
-                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${apiKey}`,
-                        "Content-Type": "application/json",
-                        "HTTP-Referer": window.location.origin,
-                        "X-Title": "Ansh AI Web"
-                    },
-                    body: JSON.stringify({
-                        "model": model,
-                        "messages": chatHistory // 2. Poori History bhej rahe hain!
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    appendMsg('ai', `❌ <b>Error:</b> ${data.error.message}`);
-                    chatHistory.pop(); // Error aaye toh last message history se hata do
-                } else {
-                    const aiContent = data.choices[0].message.content;
-                    appendMsg('ai', aiContent);
-                    // 3. AI ka reply bhi history mein add karo
-                    chatHistory.push({ "role": "assistant", "content": aiContent });
-                }
-            } catch (err) {
-                appendMsg('ai', "🚫 Error: Internet check karo.");
-                chatHistory.pop();
-            } finally {
-                loading.classList.add('hidden');
-            }
-        };
-    </script>
 </body>
-</html>
+    </html>
+    
