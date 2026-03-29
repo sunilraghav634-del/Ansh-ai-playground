@@ -1,0 +1,24 @@
+{
+  "name": "Ansh AI Playground",
+  "short_name": "Ansh AI",
+  "description": "Smart AI Playground with Memory",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=AI&backgroundColor=3b82f6&fontSize=40",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=AI&backgroundColor=3b82f6&fontSize=40",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
