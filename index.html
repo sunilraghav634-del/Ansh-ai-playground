@@ -3,75 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat and Image Mode - Text Only</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; }
-        #output { border: 1px solid #ccc; padding: 15px; min-height: 50px; background: white; margin-top: 10px; }
-        #input-text { padding: 10px; width: 80%; max-width: 400px; margin-bottom: 10px; }
-        #image-container img { max-width: 100%; margin-top: 20px; }
-        .controls { margin-bottom: 20px; }
-    </style>
+    <title>Speech Recognition and Synthesis</title>
 </head>
 <body>
-
-    <h1>Chat and Image Mode Example</h1>
-
-    <div class="controls">
-        <button id="chat-mode">Chat Mode</button>
-        <button id="image-mode">Image Mode</button>
-    </div>
-
-    <input type="text" id="input-text" placeholder="Type your prompt here...">
-    <br>
-    
-    <button id="submit-btn">Send</button>
-
+    <h1>Speech Recognition and Synthesis Example</h1>
+    <button id="start-recording">Start Recording</button>
+    <button id="speak">Speak Text</button>
     <p id="output"></p>
-    <div id="image-container"></div>
     
     <script>
-        let currentMode = 'chat'; // default mode
-        const inputText = document.getElementById('input-text');
-        const output = document.getElementById('output');
-        const imgContainer = document.getElementById('image-container');
-
-        // Mode selection logic
-        document.getElementById('chat-mode').addEventListener('click', () => {
-            currentMode = 'chat';
-            output.textContent = 'Switched to Chat Mode.';
-            imgContainer.innerHTML = '';
+        // Speech recognition
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('output').textContent = transcript;
+        };
+        document.getElementById('start-recording').addEventListener('click', () => {
+            recognition.start();
         });
 
-        document.getElementById('image-mode').addEventListener('click', () => {
-            currentMode = 'image';
-            output.textContent = 'Switched to Image Mode.';
-        });
-
-        // Submit logic
-        document.getElementById('submit-btn').addEventListener('click', () => {
-            const prompt = inputText.value;
-            if (!prompt) {
-                output.textContent = "Please enter some text.";
-                return;
-            }
-
-            if (currentMode === 'chat') {
-                // Same output look for text
-                output.textContent = "Chat response for: " + prompt + " (Placeholder: Connection needed here)";
-                imgContainer.innerHTML = ''; // Clear images in chat mode
-            } else if (currentMode === 'image') {
-                // Image mode logic
-                output.textContent = "Generating image for: " + prompt + "...";
-                
-                // MOCK IMAGE GENERATION (Replace with real API call)
-                // Usi link ka use kiya hai jo maine pehle suggest kiya tha testing ke liye
-                const mockImageUrl = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=512&height=512&seed=42`;
-                imgContainer.innerHTML = `<img src="${mockImageUrl}" alt="Generated Image">`;
-            }
-            
-            // Optional: Clear input field after sending
-            // inputText.value = ''; 
+        // Speech synthesis
+        document.getElementById('speak').addEventListener('click', () => {
+            const text = document.getElementById('output').textContent;
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
         });
     </script>
 </body>
-</html>
+</html> 
+// Isme do modes add karne hai chat mode aur image generation mode
