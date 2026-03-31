@@ -1,7 +1,8 @@
 const CACHE_NAME = 'ansh-ai-v1';
 const ASSETS = [
-  '/',
-  '/index.html'
+  './',
+  './index.html',
+  './manifest.json'
 ];
 
 self.addEventListener('install', e => {
