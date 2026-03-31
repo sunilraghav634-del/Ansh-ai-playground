@@ -3,90 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Multi-Mode Assistant</title>
+    <title>Chat and Image Mode - Text Only</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; background: #f4f4f9; }
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        #output { border: 1px solid #ccc; padding: 15px; min-height: 50px; background: white; margin-top: 10px; }
+        #input-text { padding: 10px; width: 80%; max-width: 400px; margin-bottom: 10px; }
+        #image-container img { max-width: 100%; margin-top: 20px; }
         .controls { margin-bottom: 20px; }
-        .mode-indicator { font-weight: bold; color: #007bff; margin: 10px; }
-        #output { border: 1px solid #ccc; padding: 15px; min-height: 50px; background: white; border-radius: 8px; }
-        #image-container img { max-width: 100%; margin-top: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .active { background-color: #007bff; color: white; }
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-    <h1>AI Assistant</h1>
-    
+    <h1>Chat and Image Mode Example</h1>
+
     <div class="controls">
-        <button id="chat-btn" class="active">Chat Mode</button>
-        <button id="image-btn">Image Mode</button>
+        <button id="chat-mode">Chat Mode</button>
+        <button id="image-mode">Image Mode</button>
     </div>
 
-    <div class="mode-indicator">Current Mode: <span id="mode-text">Chat</span></div>
-
-    <button id="start-recording" style="background: #28a745; color: white;">🎤 Push to Talk</button>
+    <input type="text" id="input-text" placeholder="Type your prompt here...">
+    <br>
     
-    <p id="output">Your speech will appear here...</p>
-    <div id="image-container"></div>
+    <button id="submit-btn">Send</button>
 
+    <p id="output"></p>
+    <div id="image-container"></div>
+    
     <script>
-        let currentMode = 'chat'; // Default mode
+        let currentMode = 'chat'; // default mode
+        const inputText = document.getElementById('input-text');
         const output = document.getElementById('output');
-        const modeText = document.getElementById('mode-text');
         const imgContainer = document.getElementById('image-container');
 
-        // UI Logic for switching modes
-        document.getElementById('chat-btn').addEventListener('click', () => setMode('chat'));
-        document.getElementById('image-btn').addEventListener('click', () => setMode('image'));
+        // Mode selection logic
+        document.getElementById('chat-mode').addEventListener('click', () => {
+            currentMode = 'chat';
+            output.textContent = 'Switched to Chat Mode.';
+            imgContainer.innerHTML = '';
+        });
 
-        function setMode(mode) {
-            currentMode = mode;
-            modeText.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
-            document.getElementById('chat-btn').classList.toggle('active', mode === 'chat');
-            document.getElementById('image-btn').classList.toggle('active', mode === 'image');
-            imgContainer.innerHTML = ''; // Clear images when switching
-        }
+        document.getElementById('image-mode').addEventListener('click', () => {
+            currentMode = 'image';
+            output.textContent = 'Switched to Image Mode.';
+        });
 
-        // Speech Recognition Setup
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'en-US';
-
-        recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript;
-            output.textContent = "You said: " + transcript;
-            
-            if (currentMode === 'chat') {
-                processChat(transcript);
-            } else {
-                processImageGen(transcript);
+        // Submit logic
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const prompt = inputText.value;
+            if (!prompt) {
+                output.textContent = "Please enter some text.";
+                return;
             }
-        };
 
-        // --- Logic Handlers ---
-
-        function processChat(text) {
-            // Placeholder: Here you would fetch response from Gemini API
-            const response = "You are in Chat Mode. You asked about: " + text;
-            speak(response);
-        }
-
-        function processImageGen(text) {
-            output.textContent = "Generating image for: " + text + "...";
-            // Placeholder: Here you would call an Image API (like DALL-E or Stable Diffusion)
-            const mockImageUrl = `https://pollinations.ai/p/${encodeURIComponent(text)}?width=512&height=512&seed=42`;
+            if (currentMode === 'chat') {
+                // Same output look for text
+                output.textContent = "Chat response for: " + prompt + " (Placeholder: Connection needed here)";
+                imgContainer.innerHTML = ''; // Clear images in chat mode
+            } else if (currentMode === 'image') {
+                // Image mode logic
+                output.textContent = "Generating image for: " + prompt + "...";
+                
+                // MOCK IMAGE GENERATION (Replace with real API call)
+                // Usi link ka use kiya hai jo maine pehle suggest kiya tha testing ke liye
+                const mockImageUrl = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=512&height=512&seed=42`;
+                imgContainer.innerHTML = `<img src="${mockImageUrl}" alt="Generated Image">`;
+            }
             
-            imgContainer.innerHTML = `<img src="${mockImageUrl}" alt="Generated Image">`;
-            speak("Generating your image now.");
-        }
-
-        function speak(text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            window.speechSynthesis.speak(utterance);
-        }
-
-        document.getElementById('start-recording').addEventListener('click', () => {
-            recognition.start();
+            // Optional: Clear input field after sending
+            // inputText.value = ''; 
         });
     </script>
 </body>
