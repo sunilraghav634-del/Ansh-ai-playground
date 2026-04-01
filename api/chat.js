@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
     try {
         const { prompt, model } = req.body;
-        const apiKey = process.env.API_KEY; // Vercel Dashboard se uthayega
+        const apiKey = process.env.API_KEY;
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -16,7 +16,8 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify({
                 "model": model,
-                "messages": [{ "role": "user", "content": prompt }]
+                "messages": [{ "role": "user", "content": prompt }],
+                "max_tokens": 400  // <--- YE LINE ADD KARDI, AB ERROR NAHI AAYEGA!
             })
         });
 
