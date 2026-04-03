@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ansh-ai-v1';
+const CACHE_NAME = 'ansh-ai-v2';
 const ASSETS = [
   './',
   './index.html',
