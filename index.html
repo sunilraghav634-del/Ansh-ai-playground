@@ -1,145 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="title" content="Ansh AI Playground - Gemini & DeepSeek Chatbot">
-<meta name="description" content="Ansh AI Playground is a fast, secure, and powerful AI assistant. Talk to Gemini 2.0 and DeepSeek R1 for free. Created by Ansh Raghav.">
-<meta name="keywords" content="Ansh AI, AI Playground, Gemini 2.0 Flash, DeepSeek R1, Free AI Chatbot, Ansh Raghav, Vercel AI">
-<meta name="author" content="Ansh Raghav">
-
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://ansh-ai-playground.vercel.app/">
-<meta property="og:title" content="Ansh AI Playground - Next Gen Chatbot">
-<meta property="og:description" content="Talk to the latest AI models like Gemini and DeepSeek on Ansh AI Playground.">
-<meta property="og:image" content="https://api.dicebear.com/7.x/initials/svg?seed=AI&backgroundColor=3b82f6">
-
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="Ansh AI Playground">
-<meta property="twitter:description" content="Talk to the latest AI models for free.">
-    
-    <meta name="google-site-verification" content="g4nuNLkh4GxaRdoi_a6hCavMnb6D8fnpOT878WJR_tg" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="g4nuNLkh4GxaRdoi_a6hCavMnb6D8fnpOT878WJR_tg" />
     <title>Ansh AI Playground</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .chat-container { height: calc(100vh - 320px); min-height: 400px; }
-        .glass-effect { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="max-w-5xl mx-auto p-4 md:p-8">
-        <header class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-4xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent italic">ANSH AI</h1>
-                <p class="text-slate-500 text-sm font-medium uppercase tracking-widest">Dev Playground v1.2 (Secure)</p>
-            </div>
+    <div class="app-container">
+        <header>
+            <h1>Ansh AI Playground</h1>
+            <button onclick="clearChat()" class="clear-btn">Clear History</button>
         </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div class="lg:col-span-1 space-y-4">
-                <div class="glass-effect p-5 rounded-2xl shadow-xl border-blue-500/20">
-                    <h2 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-tighter">Configuration</h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-semibold mb-2 text-slate-300">Select Model</label>
-                            <select id="modelSelect" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer">
-                                <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
-                                <option value="deepseek/deepseek-r1">DeepSeek R1</option>
-                                <option value="meta-llama/llama-3.1-8b-instruct">Llama 3.1 8B</option>
-                                <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
-                            </select>
-                        </div>
-                        <button onclick="clearChat()" class="w-full py-2 text-slate-500 hover:text-red-400 text-xs font-medium transition italic">Clear History</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-3 flex flex-col space-y-4">
-                <div id="chatBox" class="chat-container glass-effect rounded-2xl p-6 overflow-y-auto shadow-2xl flex flex-col gap-4 border-slate-700/50">
-                    <div class="m-auto text-center opacity-40">
-                        <div class="text-5xl mb-4">🤖</div>
-                        <p class="text-sm">Ready for your input. (API Secure Mode)</p>
-                    </div>
-                </div>
-
-                <div class="relative group">
-                    <textarea id="userInput" rows="2" placeholder="Ask Ansh AI..." 
-                        class="w-full bg-slate-800/80 border border-slate-700 rounded-2xl p-4 pr-16 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all resize-none shadow-lg"></textarea>
-                    <button onclick="sendMessage()" id="sendBtn" 
-                        class="absolute right-3 bottom-3 bg-blue-600 hover:bg-blue-500 p-3 rounded-xl shadow-lg transition-transform active:scale-95">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-current" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                    </button>
-                </div>
-            </div>
+        <div id="chat-window"></div>
+        <div class="input-group">
+            <input type="text" id="user-input" placeholder="Ansh se kuch puchiye...">
+            <button onclick="sendToAI()">Send</button>
         </div>
     </div>
-
-    <script>
-        function clearChat() {
-            document.getElementById('chatBox').innerHTML = `<div class="m-auto text-center opacity-40"><div class="text-5xl mb-4">🤖</div><p class="text-sm">New Session Started.</p></div>`;
-        }
-
-        async function sendMessage() {
-            const model = document.getElementById('modelSelect').value;
-            const userInput = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
-            const sendBtn = document.getElementById('sendBtn');
-
-            if (!userInput.value.trim()) return;
-
-            if(chatBox.querySelector('.m-auto')) chatBox.innerHTML = '';
-
-            const prompt = userInput.value;
-            appendMessage('user', prompt);
-            userInput.value = '';
-            
-            sendBtn.disabled = true;
-            const aiMsgDiv = appendMessage('ai', '<span class="animate-pulse italic">Thinking...</span>');
-
-            try {
-                // Calling your Vercel API Route
-                const response = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: prompt, model: model })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    aiMsgDiv.innerHTML = `<span class="text-red-400 font-bold">Error:</span> ${data.error.message || "Failed"}`;
-                } else if (data.choices && data.choices[0]) {
-                    aiMsgDiv.innerText = data.choices[0].message.content;
-                } else {
-                    aiMsgDiv.innerText = "Response failed. Check Vercel Logs.";
-                }
-
-            } catch (err) {
-                aiMsgDiv.innerText = "Network Error: API is not responding.";
-                console.error(err);
-            } finally {
-                sendBtn.disabled = false;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-        }
-
-        function appendMessage(role, text) {
-            const chatBox = document.getElementById('chatBox');
-            const wrapper = document.createElement('div');
-            wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `max-w-[85%] p-4 rounded-2xl text-sm ${role === 'user' ? 'bg-blue-600 shadow-lg' : 'bg-slate-800 border border-slate-700'}`;
-            msgDiv.innerHTML = text;
-            wrapper.appendChild(msgDiv);
-            chatBox.appendChild(wrapper);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            return msgDiv;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
