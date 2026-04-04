@@ -1,29 +1,20 @@
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
+  if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
-    try {
-        const { prompt, model } = req.body;
-        const apiKey = process.env.API_KEY;
+  const { messages } = req.body;
 
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json",
-                "X-Title": "Ansh AI Playground"
-            },
-            body: JSON.stringify({
-                "model": model,
-                "messages": [{ "role": "user", "content": prompt }],
-                "max_tokens": 300  // <--- YE LINE ADD KARDI, AB ERROR NAHI AAYEGA!
-            })
-        });
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.0-flash-exp:free",
+      messages: messages // Isse AI ko pichli baatein yaad rahengi
+    })
+  });
 
-        const data = await response.json();
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(500).json({ error: "Server Error: " + error.message });
-    }
+  const data = await response.json();
+  res.status(200).json(data);
 }
