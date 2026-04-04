@@ -17,7 +17,7 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 "model": model,
                 "messages": [{ "role": "user", "content": prompt }],
-                "max_tokens": 400  // <--- YE LINE ADD KARDI, AB ERROR NAHI AAYEGA!
+                "max_tokens": 10000  // <--- YE LINE ADD KARDI, AB ERROR NAHI AAYEGA!
             })
         });
 
